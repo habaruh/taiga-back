@@ -14,23 +14,30 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:9.4
+        env:
+          POSTGRES_USER: postgres
+          #POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: taiga
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      rabbitmq:
+        image: rabbitmq
+        ports:
+          - 5672:5672
+        # needed because the rabbitmq container does not provide a healthcheck
+        options: '--health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 10s --health-retries 6 --health-start-period 60s'
+
     steps:
     - uses: actions/checkout@v2      
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
-
-    - name: Setup RabbitMQ
-      uses: nijel/rabbitmq-action@v1.0.0
-      
-    - name: Setup PostgreSQL
-      uses: Harmon758/postgresql-action@v1.0.0
-      with:
-        postgresql version: 9.4
-        postgresql db: taiga 
-        postgresql user: postgres 
-        #postgresql password: # optional, default is 
 
     - name: Install dependencies
       run: |
@@ -41,6 +48,6 @@ jobs:
       run: |
         coverage run --source=taiga --omit='*tests*,*commands*,*migrations*,*admin*,*.jinja,*dashboard*,*settings*,*wsgi*,*questions*,*documents*' -m pytest -v --tb=native --pythonwarnings=default
 
-    - name: Publish coverage to coverall
+    - name: Publish coverage to coveralls
       run: |
         coveralls
