@@ -29,9 +29,7 @@ jobs:
       with:
         postgresql version: 9.4
         postgresql db: taiga 
-        # POSTGRES_USER - create the specified user with superuser power
-        #postgresql user: # optional, default is 
-        # POSTGRES_PASSWORD - superuser password
+        postgresql user: postgres 
         #postgresql password: # optional, default is 
 
     - name: Install dependencies
