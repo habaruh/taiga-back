@@ -973,8 +973,17 @@ class MembershipViewSet(BlockedByProjectMixin, ModelCrudViewSet):
                 error_type
             )
 
+    def create(self, request, *args, **kwargs):
+        if not request.user.verified_email:
+            return response.BadRequest(_("To add members you have to verify your email address"))
+
+        return super().create(request, *args, **kwargs)
+
     @list_route(methods=["POST"])
     def bulk_create(self, request, **kwargs):
+        if not request.user.verified_email:
+            return response.BadRequest(_("To add members you have to verify your email address"))
+
         context = {
             "request": request
         }
