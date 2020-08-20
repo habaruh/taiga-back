@@ -24,13 +24,13 @@ jobs:
         ports:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
-        options: '--health-cmd "pg_isready" --health-interval 10s --health-timeout 10s --health-retries 6 --health-start-period 60s'
+        options: '--health-cmd "pg_isready" --health-interval 5s --health-timeout 5s --health-retries 6 --health-start-period 20s'
       rabbitmq:
         image: rabbitmq
         ports:
           - 5672:5672
         # needed because the rabbitmq container does not provide a healthcheck
-        options: '--health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 10s --health-retries 6 --health-start-period 60s'
+        options: '--health-cmd "rabbitmqctl status" --health-interval 5s --health-timeout 5s --health-retries 6 --health-start-period 20s'
 
     steps:
     - uses: actions/checkout@v2      
